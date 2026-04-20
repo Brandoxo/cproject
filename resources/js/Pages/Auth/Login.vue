@@ -73,9 +73,10 @@ const options = {
                         required
                         autofocus
                         autocomplete="username"
+                        placeholder="Admin_Alpha"
                     />
                 </div>
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.username" />
             </div>
 
             <div class="mt-4">
@@ -108,9 +109,14 @@ const options = {
 
             <div class="flex items-center justify-end mt-4 mb-4">
 
-                <LoginButton class=" w-full shadow-md shadow-primary-cyan-400 hover:shadow-primary-cyan-600" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Iniciar Sesión
+                <LoginButton 
+                    class="w-full shadow-md shadow-primary-cyan-400 hover:shadow-primary-cyan-600" 
+                    :disabled="form.processing"
+                >   
+                    <div class="flex items-center">
+                    <span>INICIAR SESION</span>
                     <ArrowRight class="ml-2" />
+                    </div>
                 </LoginButton>
             </div>
         </form>

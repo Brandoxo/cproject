@@ -5,8 +5,10 @@ import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import LoginButton from '@/Components/Login/login-button.vue';
+import { ArrowRight, AtSign, KeyRound } from 'lucide-vue-next';
+import bgLogin from '../../../../src/assets/bg-images/bg-login.png';
 
 defineProps({
     canResetPassword: Boolean,
@@ -14,7 +16,7 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
+    username: '',
     password: '',
     remember: false,
 });
@@ -27,64 +29,94 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+
+const options = {
+    title: 'CMS_PROJECT',
+    description: 'CENTRO DE ADMINISTRACIÓN',
+    version: 'v1.0'
+}
 </script>
 
 <template>
-    <Head title="Log in" />
+    <Head title="Iniciar Sesion" />
+    <div class="bg-black/20 fixed inset-0 -z-10"></div>
+    <div class="fixed inset-0 -z-20">
+        <img :src="bgLogin" alt="background-image" class="w-full h-full object-cover" />
+    </div>
 
     <AuthenticationCard>
         <template #logo>
             <AuthenticationCardLogo />
         </template>
+        <template #title>
+            <div class="mx-auto items-center flex flex-col justify-center text-text-secondary font-spacegrotesk">
+            <h1 class="text-2xl font-bold text-white"> {{ options.title }} </h1>
+            <span class="text-sm">{{ options.description }}</span>
+            <span class="text-sm">{{ options.version }}</span>
+            </div>
+        </template>
+        
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" class="flex flex-col gap-2">
             <div>
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+                <InputLabel for="username" value="Usuario" />
+                <div class="relative">
+                    <AtSign class="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#757578]" />
+                    <TextInput
+                        id="username"
+                        v-model="form.username"
+                        class="mt-1 block w-full pl-12 text-[#757578]"
+                        required
+                        autofocus
+                        autocomplete="username"
+                    />
+                </div>
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <div class="flex justify-between">
+                <InputLabel for="password" value="Contraseña" />
+                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-xs text-primary-cyan-200 hover:text-primary-cyan-600 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    ¿OLVIDASTE LA CONTRASENA?
+                </Link>
+                </div>
+                <div class="relative">
+                <KeyRound class="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#757578] rotate-[225deg]" />
                 <TextInput
                     id="password"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 block w-full"
+                    class="mt-1 pl-12 block w-full text-[#757578]"
                     required
                     autocomplete="current-password"
                 />
+                </div>
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="block mt-4">
                 <label class="flex items-center">
-                    <Checkbox v-model:checked="form.remember" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
+                    <Checkbox v-model:checked="form.remember" name="remember" class="bg-[#1E2022] border-[#47484A] checked:bg-primary-cyan-600" />
+                    <span class="ms-2 text-sm text-text-secondary">Recuérdame.</span>
                 </label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Forgot your password?
-                </Link>
+            <div class="flex items-center justify-end mt-4 mb-4">
 
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
+                <LoginButton class=" w-full shadow-md shadow-primary-cyan-400 hover:shadow-primary-cyan-600" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    Iniciar Sesión
+                    <ArrowRight class="ml-2" />
+                </LoginButton>
             </div>
         </form>
+        <div class="flex flex-col items-center gap-2">
+        <div class=" bg-[#47484A] h-0.5 mt-4 mx-auto"></div>
+        <span class="text-xs text-center text-text-secondary">Sólo personal autorizado. Sesiones externas serán monitoreadas.</span>
+        </div>
     </AuthenticationCard>
 </template>

@@ -24,6 +24,8 @@ export default {
             colors: {
                 'background': '#131313',
                 'text-secondary': '#ABABAD',
+                'background-black': '#0E0E0E',
+                'background-item': '#ADAAAA',
 
                 'primary-cyan': {
                     100: '#00D1FF',

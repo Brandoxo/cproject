@@ -7,7 +7,8 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import TextInputOn from '@/Components/TextInputOn.vue';
+import { hacketText } from '@/utils/hacketText';
 
 const props = defineProps({
     user: Object,
@@ -77,32 +78,48 @@ const clearPhotoFileInput = () => {
 </script>
 
 <template>
-    <FormSection @submitted="updateProfileInformation">
-        <template #title>
-            Profile Information
-        </template>
-
-        <template #description>
-            Update your account's profile information and email address.
-        </template>
+        <FormSection @submitted="updateProfileInformation">
 
         <template #form>
-            <!-- Profile Photo -->
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-4">
-                <!-- Profile Photo File Input -->
-                <input
-                    id="photo"
-                    ref="photoInput"
-                    type="file"
-                    class=""
-                    @change="updatePhotoPreview"
-                >
-
-                <InputLabel for="photo" value="Photo" />
-
+                    <!-- Profile Photo -->
+            <div class="col-span-6 sm:col-span-4 bg-background/10 p-4 rounded-md">
                 <!-- Current Profile Photo -->
-                <div v-show="! photoPreview" class="mt-2">
-                    <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full size-20 object-cover">
+                <div v-show="! photoPreview" class="mt-2 flex items-center gap-4">
+                    <!-- Photo Container with Edit Input -->
+                    <div class="relative">
+                        <img :src="user.profile_photo_url" :alt="user.name" class="rounded-md size-40 object-cover border-2 border-primary-cyan-100 bg-background-item" />
+                        <!-- Profile Photo File Input (positioned overlay) -->
+                        <input
+                            id="photo"
+                            ref="photoInput"
+                            type="file"
+                            class="absolute bottom-0 right-0 size-12 opacity-0 cursor-pointer rounded-full z-10"
+                            @change="updatePhotoPreview"
+                            />
+                        <div class="absolute bottom-0 right-0 size-12 bg-primary-cyan-100 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-background" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.343 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                    <p class="text-white text-2xl uppercase">{{ hacketText(user.name) }}</p>
+                    <p class="text-primary-cyan-100 text-sm">{{ hacketText(user.email) }}</p>
+                
+                <div class="flex">
+                <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
+                    Cambiar Foto
+                </SecondaryButton>
+                 <SecondaryButton
+                    v-if="user.profile_photo_path"
+                    type="button"
+                    class="mt-2"
+                    @click.prevent="deletePhoto"
+                >
+                    Eliminar Foto
+                </SecondaryButton>
+                </div>
+                    </div>
                 </div>
 
                 <!-- New Profile Photo Preview -->
@@ -113,26 +130,33 @@ const clearPhotoFileInput = () => {
                     />
                 </div>
 
-                <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
-                    Select A New Photo
-                </SecondaryButton>
-
-                <SecondaryButton
-                    v-if="user.profile_photo_path"
-                    type="button"
-                    class="mt-2"
-                    @click.prevent="deletePhoto"
-                >
-                    Remove Photo
-                </SecondaryButton>
-
                 <InputError :message="form.errors.photo" class="mt-2" />
             </div>
+        </template>
+                <template #actions>
+            <ActionMessage :on="form.recentlySuccessful" class="me-3">
+                Saved.
+            </ActionMessage>
+
+            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                Save
+            </PrimaryButton>
+        </template>
+        </FormSection>
+        
+    <FormSection @submitted="updateProfileInformation">
+
+        <template #title>
+            Información del Perfil
+        </template>
+
+        <template #form>
 
             <!-- Name -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
-                <TextInput
+            <div class="grid grid-cols-2 gap-6 justify-center">
+            <div class="c">
+                <InputLabel for="name" value="Nombre" />
+                <TextInputOn
                     id="name"
                     v-model="form.name"
                     type="text"
@@ -144,9 +168,9 @@ const clearPhotoFileInput = () => {
             </div>
 
             <!-- Username -->
-            <div class="col-span-6 sm:col-span-4">
+            <div class="c">
                 <InputLabel for="username" value="Username" />
-                <TextInput
+                <TextInputOn
                     id="name"
                     v-model="form.username"
                     type="text"
@@ -156,11 +180,12 @@ const clearPhotoFileInput = () => {
                 />
                 <InputError :message="form.errors.username" class="mt-2" />
             </div>
+            </div>
 
             <!-- Email -->
-            <div class="col-span-6 sm:col-span-4">
+            <div class="c">
                 <InputLabel for="email" value="Email" />
-                <TextInput
+                <TextInputOn
                     id="email"
                     v-model="form.email"
                     type="email"

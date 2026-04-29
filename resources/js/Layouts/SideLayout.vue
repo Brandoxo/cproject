@@ -231,7 +231,8 @@ const routes = [
                 </div>
             </header>
 
-            <main class="flex-1 p-6">
+            <main class="flex-1 p-6 bg-background-black">
+                 <slot name="header" />
                 <slot />
             </main>
         </div>

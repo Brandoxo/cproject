@@ -14,25 +14,26 @@ defineProps({
 </script>
 
 <template>
-    <SideLayout title="Profile">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Profile
+    <SideLayout title="Configuración">
+        <div class=" py-10 sm:px-6 lg:px-8 mx-auto bg-background">
+            <div class="mx-auto w-full max-w-7xl px-8">
+            <h2 class="font-semibold text-3xl leading-tight text-white uppercase ">
+                Configuración
             </h2>
-        </template>
-
+            <p class="text-text-secondary/60 mt-2">
+                Aquí puedes configurar tu cuenta, también protecciones de seguridad que tienes activas.
+            </p>
+            </div>
         <div>
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div v-if="$page.props.jetstream.canUpdateProfileInformation">
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
 
-                    <SectionBorder />
                 </div>
 
                 <div v-if="$page.props.jetstream.canUpdatePassword">
                     <UpdatePasswordForm class="mt-10 sm:mt-0" />
 
-                    <SectionBorder />
                 </div>
 
                 <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
@@ -41,17 +42,17 @@ defineProps({
                         class="mt-10 sm:mt-0"
                     />
 
-                    <SectionBorder />
                 </div>
 
                 <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
 
                 <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-                    <SectionBorder />
 
                     <DeleteUserForm class="mt-10 sm:mt-0" />
                 </template>
             </div>
         </div>
+                </div>
+
     </SideLayout>
 </template>

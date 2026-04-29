@@ -26,6 +26,7 @@ export default {
                 'text-secondary': '#ABABAD',
                 'background-black': '#0E0E0E',
                 'background-item': '#ADAAAA',
+                'background-section': "#1A1919",
 
                 'primary-cyan': {
                     100: '#00D1FF',

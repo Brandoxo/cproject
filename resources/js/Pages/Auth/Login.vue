@@ -69,7 +69,7 @@ const options = {
                     <TextInput
                         id="username"
                         v-model="form.username"
-                        class="mt-1 block w-full pl-12 text-[#757578]"
+                        class="mt-1 block w-full pl-12 text-[#ffffff]"
                         required
                         autofocus
                         autocomplete="username"
@@ -92,7 +92,7 @@ const options = {
                     id="password"
                     v-model="form.password"
                     type="password"
-                    class="mt-1 pl-12 block w-full text-[#757578]"
+                    class="mt-1 pl-12 block w-full text-[#ffffff]"
                     required
                     autocomplete="current-password"
                 />

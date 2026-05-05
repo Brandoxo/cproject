@@ -1,15 +1,17 @@
 <script setup>
 import SideLayout from '@/Layouts/SideLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
-import { hacketText } from '@/utils/hacketText.js';
+import PageHeader from '@/Components/PageHeader.vue';
+import { usePage } from '@inertiajs/vue3';
+
+const page = usePage();
+
 </script>
 
 <template>
-    <SideLayout title="Dashboard">
+    <SideLayout title="">
         <template #header>
-            <h2 class="font-semibold text-2xl text-white leading-tight">
-                {{ hacketText('Dashboard') }}
-            </h2>
+            <PageHeader title="Dashboard" :breadcrumbs="[page.props.auth.user.roles[0] || 'No Role', 'current_panel', 'current_page']" />
         </template>
 
         <div class="max-w-7xl mx-auto">

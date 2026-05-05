@@ -12,7 +12,6 @@ import { hacketText } from '@/utils/hacketText.js';
 
 defineProps({
     title: String,
-
 });
 
 const showingNavigationDropdown = ref(false);
@@ -37,6 +36,13 @@ const routes = [
     { name: 'system logs', label: 'System Logs', icon: Logs, link: 'dashboard' },
     // Add more routes here as needed
 ];
+
+const external_panels = [
+    { id: '1', panel_name: 'panel1', api_url: 'https://example.com/panel1', api_key: 'your_api_key_here', panel_type: 'XUI.ONE', status: 'active' },
+    { id: '2', panel_name: 'panel2', api_url: 'https://example.com/panel2', api_key: 'your_api_key_here', panel_type: 'XUI.ONE', status: 'active' },
+    { id: '3', panel_name: 'panel3', api_url: 'https://example.com/panel3', api_key: 'your_api_key_here', panel_type: 'XUI.ONE', status: 'active' },
+    // Add more external panels here as needed
+];
 </script>
 
 <template>
@@ -46,7 +52,7 @@ const routes = [
         <Banner />
 
         <!-- Top Header -->
-        <nav class="fixed top-0 left-0 right-0 h-16 bg-background-black border-b border-text-secondary/20 z-20 flex items-center px-4 sm:px-6 lg:px-8">
+        <nav v-for="panel in external_panels" :key="panel.id" class="fixed top-0 left-0 right-0 h-16 bg-background-black border-b border-text-secondary/20 z-20 flex items-center px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-16">
                     <!-- Mobile: Hamburger -->
@@ -65,7 +71,7 @@ const routes = [
                                                 <!-- Panel Navigation Links -->
                             <div class="hidden sm:flex sm:items-center gap-10">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    LegendsTV
+                                    {{ hacketText(panel.panel_name) }}
                                 </NavLink>
                             </div>
                 </div>
@@ -225,14 +231,13 @@ const routes = [
 
         <!-- Main Content -->
         <div class="lg:ml-64 pt-16 flex flex-col min-h-screen">
-            <header v-if="$slots.header" class="bg-background-black border-b border-text-secondary/20">
-                <div class="px-6 py-4">
+            <main class="p-6 bg-background-black space-y-6">
+                <header v-if="$slots.header" class="bg-background-black border-b border-text-secondary/20">
                     <slot name="header" />
-                </div>
-            </header>
-
-            <main class="flex-1 p-6 bg-background-black">
-                 <slot name="header" />
+                    <div class="py-1 flex text-sm items-center gap-2 text-text-secondary">
+                        <slot name="slug" />
+                    </div>
+                </header>
                 <slot />
             </main>
         </div>

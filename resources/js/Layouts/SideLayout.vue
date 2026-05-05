@@ -1,13 +1,13 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { House, UserCircle, Users, Database, CardSim, Logs } from 'lucide-vue-next';
+import { House, UserCircle, Users, Database, CardSim, Logs, ChevronRight } from 'lucide-vue-next';
 import { hacketText } from '@/utils/hacketText.js';
 
 defineProps({
@@ -15,6 +15,26 @@ defineProps({
 });
 
 const showingNavigationDropdown = ref(false);
+
+const page = usePage();
+
+const currentPath = computed(() => {
+    try {
+        return new URL(page.url, window.location.origin).pathname;
+    } catch (e) {
+        return window.location.pathname;
+    }
+});
+
+const isActive = (routeName) => {
+    try {
+        const url = route(routeName);
+        const path = new URL(url, window.location.origin).pathname;
+        return path === currentPath.value;
+    } catch (e) {
+        return false;
+    }
+};
 
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {
@@ -30,8 +50,13 @@ const logout = () => {
 
 const routes = [
     { name: 'dashboard', label: 'Dashboard', icon: House, link: 'dashboard' },
-    { name: 'users', label: 'Usuarios', icon: Users, link: 'dashboard' },
-    { name: 'lines', label: 'Lineas', icon: Database, link: 'dashboard' },
+    { name: 'users', label: 'Usuarios', icon: Users, link: 'users', SubPages: [
+        { name: 'create_user', label: 'Crear Usuario',  link: 'dashboard' },
+    ] },
+    { name: 'lines', label: 'Lineas', icon: Database, link: 'dashboard', SubPages: [
+        { name: 'create_line', label: 'Crear Linea',  link: 'dashboard'},
+        { name: 'generate_demo', label: 'Generar Demo',  link: 'dashboard'},
+    ] },
     { name: 'payments', label: 'Pagos', icon: CardSim, link: 'dashboard' },
     { name: 'system logs', label: 'System Logs', icon: Logs, link: 'dashboard' },
     // Add more routes here as needed
@@ -70,7 +95,7 @@ const external_panels = [
 
                                                 <!-- Panel Navigation Links -->
                             <div class="hidden sm:flex sm:items-center gap-10">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                <NavLink :href="route('dashboard')" :active="isActive('dashboard')">
                                     {{ hacketText(panel.panel_name) }}
                                 </NavLink>
                             </div>
@@ -158,7 +183,7 @@ const external_panels = [
         <!-- Mobile Responsive Nav -->
         <div :class="{'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown}" class="lg:hidden fixed top-16 left-0 right-0 bg-background-black border-b border-text-secondary/20 z-20">
             <div class="pt-2 pb-3 space-y-1">
-                <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                <ResponsiveNavLink :href="route('dashboard')" :active="isActive('dashboard')">
                     Dashboard
                 </ResponsiveNavLink>
             </div>
@@ -175,8 +200,8 @@ const external_panels = [
                 </div>
 
                 <div class="mt-3 space-y-1">
-                    <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">Profile</ResponsiveNavLink>
-                    <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')" :active="route().current('api-tokens.index')">API Tokens</ResponsiveNavLink>
+                    <ResponsiveNavLink :href="route('profile.show')" :active="isActive('profile.show')">Profile</ResponsiveNavLink>
+                    <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures" :href="route('api-tokens.index')" :active="isActive('api-tokens.index')">API Tokens</ResponsiveNavLink>
 
                     <form method="POST" @submit.prevent="logout">
                         <ResponsiveNavLink as="button">Log Out</ResponsiveNavLink>
@@ -185,8 +210,8 @@ const external_panels = [
                     <template v-if="$page.props.jetstream.hasTeamFeatures">
                         <div class="border-t border-text-secondary/20" />
                         <div class="block px-4 py-2 text-xs text-gray-400">Manage Team</div>
-                        <ResponsiveNavLink :href="route('teams.show', $page.props.auth.user.current_team)" :active="route().current('teams.show')">Team Settings</ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.jetstream.canCreateTeams" :href="route('teams.create')" :active="route().current('teams.create')">Create New Team</ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('teams.show', $page.props.auth.user.current_team)" :active="isActive('teams.show')">Team Settings</ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="$page.props.jetstream.canCreateTeams" :href="route('teams.create')" :active="isActive('teams.create')">Create New Team</ResponsiveNavLink>
 
                         <template v-if="$page.props.auth.user.all_teams.length > 1">
                             <div class="border-t border-text-secondary/20" />
@@ -216,23 +241,40 @@ const external_panels = [
             <h3 class="text-sm text-text-secondary/60">{{ hacketText("Sys admin v1") }}</h3>
         </div>        
             <nav class="flex-1 px-4 py-8 space-y-1 overflow-y-auto">
-                <Link v-for="navRoute in routes" :key="navRoute.name"
-                   :href="route(navRoute.link)"
-                    class="flex items-center gap-3 px-3 py-4 text-sm font-medium transition duration-150 ease-in-out"
-                    :class="route().current(navRoute.link)
-                        ? 'bg-primary-cyan-100/10 text-primary-cyan-100 border-r-4 border-primary-cyan-100'
-                        : 'text-text-secondary hover:bg-background-item/10 hover:text-white'"
-                >
-                    <component :is="navRoute.icon" class="size-5" :class="route().current(navRoute.link) ? 'text-primary-cyan-100' : 'text-text-secondary'" />
-                    {{ navRoute.label }}
-                </Link>
+                <template v-for="navRoute in routes" :key="navRoute.name">
+                    <Link
+                       :href="route(navRoute.link)"
+                        class="flex items-center justify-between gap-3 px-3 py-4 text-sm font-medium transition duration-150 ease-in-out"
+                        :class="isActive(navRoute.link)
+                            ? 'bg-primary-cyan-100/10 text-primary-cyan-100 border-r-4 border-primary-cyan-100'
+                            : 'text-text-secondary hover:bg-background-item/10 hover:text-white'"
+                    >   <div class="flex gap-2">
+                        <component :is="navRoute.icon" class="size-5" :class="isActive(navRoute.link) ? 'text-primary-cyan-100' : 'text-text-secondary'" />
+                        {{ navRoute.label }}
+                        </div>
+                        <ChevronRight v-if="navRoute.SubPages" class="size-4" :class="isActive(navRoute.link)
+                            ? ' text-primary-cyan-100 rotate-90'
+                            : 'text-text-secondary hover:bg-background-item/10 hover:text-white'"/>
+                    </Link>
+                    <!-- SubPages -->
+                    <div v-if="navRoute.SubPages && isActive(navRoute.link)" v-for="sub in navRoute.SubPages" :key="sub.name" class="ml-6">
+                        <Link :href="route(sub.link)"
+                            class="flex items-center gap-2 px-3 py-2 text-sm font-medium transition duration-150 ease-in-out"
+                            :class="isActive(sub.link)
+                                ? 'bg-primary-cyan-100/10 text-primary-cyan-100'
+                                : 'text-text-secondary hover:bg-background-item/10 hover:text-white'"
+                        >
+                            {{ sub.label }}
+                        </Link>
+                    </div>
+                </template>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <div class="lg:ml-64 pt-16 flex flex-col min-h-screen">
-            <main class="p-6 bg-background-black space-y-6">
-                <header v-if="$slots.header" class="bg-background-black border-b border-text-secondary/20">
+            <main class="p-6 bg-background space-y-6">
+                <header v-if="$slots.header">
                     <slot name="header" />
                     <div class="py-1 flex text-sm items-center gap-2 text-text-secondary">
                         <slot name="slug" />

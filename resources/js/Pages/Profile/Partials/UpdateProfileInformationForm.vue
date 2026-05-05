@@ -135,11 +135,11 @@ const clearPhotoFileInput = () => {
         </template>
                 <template #actions>
             <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Saved.
+                Guardado.
             </ActionMessage>
 
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Guardar
             </PrimaryButton>
         </template>
         </FormSection>
@@ -219,11 +219,11 @@ const clearPhotoFileInput = () => {
 
         <template #actions>
             <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Saved.
+                Guardado.
             </ActionMessage>
 
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Guardar
             </PrimaryButton>
         </template>
     </FormSection>

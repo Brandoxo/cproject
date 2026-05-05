@@ -93,7 +93,7 @@ const closeModal = () => {
                 </PrimaryButton>
 
                 <ActionMessage :on="form.recentlySuccessful" class="ms-3">
-                    Done.
+                    Hecho.
                 </ActionMessage>
             </div>
 

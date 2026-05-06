@@ -28,7 +28,7 @@ defineProps({
         </div>
 
         <!-- Action buttons -->
-        <div class="flex gap-2 shrink-0 hidden md:block">
+        <div class="gap-2 shrink-0 hidden md:flex">
             <CreateUser />
             <CreateLine />
         </div>

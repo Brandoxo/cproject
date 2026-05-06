@@ -24,4 +24,7 @@ Route::middleware([
     Route::get('/users', function () {
         return Inertia::render('Users/Index');
     })->name('users');
+    Route::get('/lines', function () {
+        return Inertia::render('Lines/Index');
+    })->name('lines');
 });

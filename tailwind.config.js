@@ -76,9 +76,21 @@ export default {
                     900: '#002802',
                 },
 
+                'warning-yellow': {
+                    100: '#F59E0B',
+                    200: '#FFA844',
+                    300: '#FF961B',
+                    400: '#F28200',
+                    500: '#CA6C00',
+                    600: '#A15700',
+                    700: '#794100',
+                    800: '#512B00',
+                    900: '#281600',
+                },
+
             },
         },
     },
 
-    plugins: [forms, typography],
+    plugins: [require('tailwind-scrollbar-hide'), forms, typography],
 };
